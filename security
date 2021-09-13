@@ -1,0 +1,2511 @@
+
+Ex.No: 1 A
+IMPLEMENTATION OF CAESER CIPHER
+
+AIM:
+To implement the substitution method “Caesar Cipher”.
+ALGORITHM:
+Step 1: Include the header files for implementing Caesar Cipher technique.
+Step 2: Declare the necessary variables.
+Step 3: Initially get the Plain text and Key value.
+Step 4: Now convert the plain text into cipher text using the key value.
+		Cipher text=Plain text + key % 26
+Step 5: Display the cipher text
+
+PROGRAM:
+CeaserCipher.java
+import java.io.*;
+import java.util.Scanner;
+ 
+public class CaeserCipher
+{
+    public static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+ 
+    public static String encrypt(String plainText, int shiftKey)
+    {
+        plainText = plainText.toLowerCase();
+        String cipherText = "";
+        for (int i = 0; i < plainText.length(); i++)
+        {
+            int charPosition = ALPHABET.indexOf(plainText.charAt(i));
+            int keyVal = (shiftKey + charPosition) % 26;
+            char replaceVal = ALPHABET.charAt(keyVal);
+            cipherText += replaceVal;
+        }
+        return cipherText;
+    }
+ 
+    public static String decrypt(String cipherText, int shiftKey)
+    {
+        cipherText = cipherText.toLowerCase();
+        String plainText = "";
+        for (int i = 0; i < cipherText.length(); i++)
+        {
+            int charPosition = ALPHABET.indexOf(cipherText.charAt(i));
+            int keyVal = (charPosition - shiftKey) % 26;
+            if (keyVal < 0)
+            {
+                keyVal = ALPHABET.length() + keyVal;
+            }
+            char replaceVal = ALPHABET.charAt(keyVal);
+            plainText += replaceVal;
+        }
+        return plainText;
+    }
+ 
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the String for Encryption: ");
+        String message = new String();
+        message = sc.next();
+Scanner sc1 = new Scanner(System.in);
+System.out.println("Enter the key length: ");
+int key=sc1.nextInt();
+        System.out.println(encrypt(message, key));
+        System.out.println(decrypt(encrypt(message, key), key));
+        sc.close();
+    }
+}
+OUTPUT:
+ 
+Result: 
+Thus, the Java program to implement the Caesar Cipher has been compiled and executed successfully.
+Ex.No: 2.B
+IMPLEMENTATION OF PLAYFAIR CIPHER
+AIM:
+	To write a java program for implementing Playfair Cipher.
+ALGORITHM:
+Step 1: Include the header files for implementing Play fair Cipher technique.
+Step 2: Declare the necessary variables.
+Step 3: Initially get the Plain text (word).
+Step 4: Convert the plain text into characters (a-z) and arrange them in a 5 x 5 matrix. 
+Step 5: Fill the remaining rows in the matrix with a non-repeating characters.
+Step 6: Follow the rules to convert the plaintext to cipher text.
+Step 7: Display the cipher text.
+
+PROGRAM:
+PlayFair.java
+import java.util.*;
+class Basic{
+  String allChar="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  boolean indexOfChar(char c)
+ {
+  for(int i=0;i < allChar.length();i++)
+  {
+   if(allChar.charAt(i)==c)
+                            return true;       
+  }
+  return false;
+ }
+}
+ 
+class PlayFair1{
+       Basic b=new Basic();
+       char keyMatrix[][]=new char[5][5];  
+       boolean repeat(char c)
+       {
+           if(!b.indexOfChar(c))
+           {
+               return true;
+           }
+                for(int i=0;i < keyMatrix.length;i++)
+                {
+                    for(int j=0;j < keyMatrix[i].length;j++)
+                    { 
+                        if(keyMatrix[i][j]==c || c=='J')
+                            return true;
+                    }
+                }
+                return false;
+       }
+        
+       void insertKey(String key)
+       {
+            key=key.toUpperCase();
+            key=key.replaceAll("J", "I");
+            key=key.replaceAll(" ", "");
+            int a=0,b=0;
+             
+            for(int k=0;k < key.length();k++)
+            {
+                    if(!repeat(key.charAt(k)))
+                    {
+                        keyMatrix[a][b++]=key.charAt(k);
+                        if(b>4)
+                        {
+                            b=0;
+                            a++;
+                        }
+                    }
+            }
+            
+            char p='A';
+             
+            while(a < 5)
+            {
+                   while(b < 5)
+                   {
+                        if(!repeat(p)) 
+                        {
+                            keyMatrix[a][b++]=p;
+                             
+                        }
+                      p++;
+                   }
+                   b=0;
+                   a++;
+            }
+             System.out.print("-------------------------Key Matrix-------------------");
+            for(int i=0;i < 5;i++)
+            {
+                System.out.println();
+                for(int j=0;j < 5;j++)
+                {
+                    System.out.print("\t"+keyMatrix[i][j]);
+                }
+            }
+            System.out.println("\n---------------------------------------------------------");
+             
+       }
+        
+       int rowPos(char c)
+       {
+             for(int i=0;i < keyMatrix.length;i++)
+                {
+                    for(int j=0;j < keyMatrix[i].length;j++)
+                    { 
+                        if(keyMatrix[i][j]==c)
+                            return i;
+                    }
+                }
+             return -1;
+       }
+        
+       int columnPos(char c)
+       {
+             for(int i=0;i < keyMatrix.length;i++)
+                {
+                    for(int j=0;j < keyMatrix[i].length;j++)
+                    { 
+                        if(keyMatrix[i][j]==c)
+                            return j;
+                    }
+                }
+             return -1;
+       }
+        
+       String encryptChar(String plain)
+       {
+           plain=plain.toUpperCase();
+           char a=plain.charAt(0),b=plain.charAt(1);
+           String cipherChar="";
+           int r1,c1,r2,c2;
+           r1=rowPos(a);
+           c1=columnPos(a);
+           r2=rowPos(b);
+           c2=columnPos(b);
+         
+           if(c1==c2)
+           {
+                ++r1;
+               ++r2;
+               if(r1>4)
+                   r1=0;
+                
+               if(r2>4)
+                   r2=0;
+               cipherChar+=keyMatrix[r1][c2];
+               cipherChar+=keyMatrix[r2][c1];
+           }
+           else if(r1==r2)
+           {    
+               ++c1;
+               ++c2;
+               if(c1>4)
+                   c1=0;
+                
+               if(c2>4)
+                   c2=0;
+               cipherChar+=keyMatrix[r1][c1];
+               cipherChar+=keyMatrix[r2][c2];
+                
+           }
+           else{
+               cipherChar+=keyMatrix[r1][c2];
+               cipherChar+=keyMatrix[r2][c1];
+           }
+           return cipherChar;
+       }
+        
+        
+       String Encrypt(String plainText,String key)
+       {
+           insertKey(key);
+           String cipherText="";
+           plainText=plainText.replaceAll("j", "i");
+           plainText=plainText.replaceAll(" ", "");
+           plainText=plainText.toUpperCase();
+           int len=plainText.length();
+          // System.out.println(plainText.substring(1,2+1));
+           if(len/2!=0)
+           {
+               plainText+="X";
+               ++len;
+           }
+            
+           for(int i=0;i < len-1;i=i+2)
+           {
+              cipherText+=encryptChar(plainText.substring(i,i+2));
+              cipherText+=" "; 
+           }
+           return cipherText;
+       }
+        
+        
+       String decryptChar(String cipher)
+       {
+           cipher=cipher.toUpperCase();
+           char a=cipher.charAt(0),b=cipher.charAt(1);
+           String plainChar="";
+           int r1,c1,r2,c2;
+           r1=rowPos(a);
+           c1=columnPos(a);
+           r2=rowPos(b);
+           c2=columnPos(b);
+         
+           if(c1==c2)
+           {
+                --r1;
+               --r2;
+               if(r1 < 0)
+                   r1=4;
+                
+               if(r2 < 0)
+                   r2=4;
+               plainChar+=keyMatrix[r1][c2];
+               plainChar+=keyMatrix[r2][c1];
+           }
+           else if(r1==r2)
+           {    
+               --c1;
+               --c2;
+               if(c1 < 0)
+                   c1=4;
+                
+               if(c2 < 0)
+                   c2=4;
+               plainChar+=keyMatrix[r1][c1];
+               plainChar+=keyMatrix[r2][c2];
+                
+           }
+           else{
+               plainChar+=keyMatrix[r1][c2];
+               plainChar+=keyMatrix[r2][c1];
+           }
+           return plainChar;
+       } 
+       String Decrypt(String cipherText,String key)
+       {
+           String plainText="";
+           cipherText=cipherText.replaceAll("j", "i");
+           cipherText=cipherText.replaceAll(" ", "");
+           cipherText=cipherText.toUpperCase();
+           int len=cipherText.length();
+           for(int i=0;i < len-1;i=i+2)
+           {
+              plainText+=decryptChar(cipherText.substring(i,i+2));
+              plainText+=" ";
+                
+           }
+           return plainText;
+       }
+      
+}
+ 
+class PlayFair{
+       public static void main(String args[])throws Exception
+       {
+            PlayFair1 p=new PlayFair1();
+            Scanner scn=new Scanner(System.in);
+            String key,cipherText,plainText;
+             
+            System.out.println("Enter plaintext:");
+            plainText=scn.nextLine();
+             
+            System.out.println("Enter Key:");
+            key=scn.nextLine();
+             
+            cipherText=p.Encrypt(plainText,key);
+             
+           System.out.println("Encrypted text:");
+           System.out.println("---------------------------------------------------------\n"+cipherText);
+            System.out.println("---------------------------------------------------------");
+           String encryptedText=p.Decrypt(cipherText, key);
+           System.out.println("Decrypted text:" );
+           System.out.println("---------------------------------------------------------\n"+encryptedText);
+            System.out.println("---------------------------------------------------------");
+            
+       }
+}
+OUTPUT:
+ 
+
+
+
+
+Result: 
+	Thus, the java program to implement the Play Fair Cipher has been compiled and executed successfully.
+
+
+Ex.No. 1.C
+IMPLEMENTATION OF HILL CIPHER
+
+AIM:
+To write a java program for implementing Hill Cipher.
+ALGORITHM:
+
+Step 1: Include the header files for implementing Hill Cipher technique.
+Step 2: Declare the necessary variables.
+Step 3: Initially get the Plain text (a-z) and the values of a matrix.
+Step 4: Follow the rules to convert the plaintext to cipher text.
+	Step 5: Display the cipher text
+
+PROGRAM:
+import java.io.*; 
+import java.util.*; 
+import java.io.*; 
+public class HillCipherLogic { 
+     static int[][] decrypt = new int[3][1]; 
+     static int[][] a = new int[3][3]; 
+     static int[][] b = new int[3][3]; 
+     static int[][] mes = new int[3][1]; 
+     static int[][] res = new int[3][1]; 
+     static BufferedReader br = new BufferedReader(new InputStreamReader( 
+               System.in)); 
+     static Scanner sc = new Scanner(System.in); 
+     public static void main(String[] args) throws IOException { 
+          getKeys(); 
+          for (int i = 0; i < 3; i++) 
+               for (int j = 0; j < 1; j++) 
+                    for (int k = 0; k < 3; k++) { 
+                         res[i][j] = res[i][j] + a[i][k] * mes[k][j]; 
+                    } 
+          System.out.print("\n Encrypted string is : "); 
+          for (int i = 0; i < 3; i++) { 
+               // Hill Cipher actual Encryption logic modulo 26 
+               System.out.print((char) (res[i][0] % 26 + 97)); 
+               res[i][0] = res[i][0]; 
+          } 
+          getInverse(); 
+          for (int i = 0; i < 3; i++) 
+               for (int j = 0; j < 1; j++) 
+                    for (int k = 0; k < 3; k++) { 
+                         decrypt[i][j] = decrypt[i][j] + b[i][k] * res[k][j]; 
+                    } 
+          System.out.print("\nDecrypted string is : "); 
+          for (int i = 0; i < 3; i++) { 
+               // Hill cipher actual Decryption logic inverse the matrix and modulo 26 
+               System.out.print((char) (decrypt[i][0] % 26 + 97)); 
+          } 
+          System.out.print("\n"); 
+     } 
+/** 
+ * This method actually takes the input from user or from console for encryption and decryption 
+ * @throws IOException Only one checked exception as input is being taken at runtime from console 
+ */ 
+     public static void getKeys() throws IOException { 
+          System.out 
+                    .println("Enter 3x3 matrix for key (It should be inversible): "); 
+          for (int i = 0; i < 3; i++) 
+               for (int j = 0; j < 3; j++) 
+                    a[i][j] = sc.nextInt(); 
+          System.out.print("\nEnter a 3 letter string: "); 
+          String msg = br.readLine(); 
+          for (int i = 0; i < 3; i++) 
+               mes[i][0] = msg.charAt(i) - 97; 
+     } 
+
+     public static void getInverse() { 
+          int p, q; 
+          int[][] c = a; 
+          for (int i = 0; i < 3; i++) 
+               for (int j = 0; j < 3; j++) { 
+                    // a[i][j]=sc.nextFloat(); 
+                    if (i == j) 
+                         b[i][j] = 1; 
+                    else 
+                         b[i][j] = 0; 
+               } 
+          for (int k = 0; k < 3; k++) { 
+               for (int i = 0; i < 3; i++) { 
+                    p = c[i][k]; 
+                    q = c[k][k]; 
+                    for (int j = 0; j < 3; j++) { 
+                         if (i != k) { 
+                              c[i][j] = c[i][j] * q - p * c[k][j]; 
+                              b[i][j] = b[i][j] * q - p * b[k][j]; 
+                         } 
+                    } 
+               } 
+          } 
+          for (int i = 0; i < 3; i++) 
+               for (int j = 0; j < 3; j++) { 
+                    b[i][j] = b[i][j] / c[i][i]; 
+               } 
+          System.out.println(""); 
+          System.out.println("\nInverse Matrix is : "); 
+          for (int i = 0; i < 3; i++) { 
+               for (int j = 0; j < 3; j++) 
+                    System.out.print(b[i][j] + " "); 
+               System.out.print("\n"); 
+          } 
+     } 
+}
+
+OUTPUT:
+ 
+
+Result: 
+Thus, the java program to implement the Hill Cipher has been compiled and executed successfully.
+
+
+Ex.No. 1.D
+IMPLEMENTATION OF VIGENERE CIPHER
+
+
+AIM:
+To write a java program for implementing Vigenere Cipher.
+ALGORITHM:
+Step 1: Include the header files for implementing Vigenere technique.
+Step 2: Declare the necessary variables.
+Step 3: Initially get the Plain text (a-z) and the values of a matrix.
+Step 4: Follow the rules to convert the plaintext to cipher text.
+Step 5: Display the cipher text.
+PROGRAM:
+import java.io.*;
+public class VigenereCipher
+{
+    public static String encrypt(String text, final String key)
+    {
+        String res = "";
+        text = text.toUpperCase();
+        for (int i = 0, j = 0; i < text.length(); i++)
+        {
+            char c = text.charAt(i);
+            if (c < 'A' || c > 'Z')
+                continue;
+            res += (char) ((c + key.charAt(j) - 2 * 'A') % 26 + 'A');
+            j = ++j % key.length();
+        }
+        return res;
+    }
+     public static String decrypt(String text, final String key)
+    {
+        String res = "";
+        text = text.toUpperCase();
+        for (int i = 0, j = 0; i < text.length(); i++)
+        {
+            char c = text.charAt(i);
+            if (c < 'A' || c > 'Z')
+                continue;
+            res += (char) ((c - key.charAt(j) + 26) % 26 + 'A');
+            j = ++j % key.length();
+        }
+        return res;
+    }
+ 
+    public static void main(String[] args)
+    {
+        String key = "VIGENERECIPHER";
+        String message = "Welcome to Cryptography ";
+        String encryptedMsg = encrypt(message, key);
+        System.out.println("String: " + message);
+        System.out.println("Encrypted message: " + encryptedMsg);
+        System.out.println("Decrypted message: " + decrypt(encryptedMsg, key));
+    }
+}
+ OUTPUT: 
+
+ 
+
+
+
+
+
+
+Result: 
+Thus, the java program to implement the Vigenere Cipher has been compiled and executed successfully.
+
+
+
+
+
+Ex.No. 1.E
+IMPLEMENTATION OF RAIL FENCE – ROW & COLUMN TRANSFORMATION
+AIM:
+To write a java program for implementing Rail fence – row & Column Transformation.
+
+Algorithm:
+Step 1: Include the header files for implementing Substitution and Transposition Techniques.
+Step 2: Declare the necessary variables.
+Step 3: Initially get the Plain text.
+Step 4: Calculate the length of the plain text.
+Step 5: Apply the rail fence row and column transformation concept.
+Step 6: Display the Cipher text.
+Step 7: Decrypt the text using the Deciphering technique.
+Step 8: Display the decrypted text (Original Text).
+
+PROGRAM:
+import java.util.*;
+class RailFenceBasic{
+ int depth;
+ String Encryption(String plainText,int depth)throws Exception
+ {
+  int r=depth,len=plainText.length();
+  int c=len/depth;
+  char mat[][]=new char[r][c];
+  int k=0;
+   
+  String cipherText="";
+   
+  for(int i=0;i< c;i++)
+  {
+   for(int j=0;j< r;j++)
+   {
+    if(k!=len)
+     mat[j][i]=plainText.charAt(k++);
+    else
+     mat[j][i]='X';
+   }
+  }
+  for(int i=0;i< r;i++)
+  {
+   for(int j=0;j< c;j++)
+   {
+    cipherText+=mat[i][j];
+   }
+  }
+  return cipherText;
+ }
+  
+  
+ String Decryption(String cipherText,int depth)throws Exception
+ {
+  int r=depth,len=cipherText.length();
+  int c=len/depth;
+  char mat[][]=new char[r][c];
+  int k=0;
+   
+  String plainText="";
+     
+  for(int i=0;i< r;i++)
+  {
+   for(int j=0;j< c;j++)
+   {
+    mat[i][j]=cipherText.charAt(k++);
+   }
+  }
+  for(int i=0;i< c;i++)
+  {
+   for(int j=0;j< r;j++)
+   {
+    plainText+=mat[j][i];
+   }
+  }
+     return plainText;
+ }
+}
+ 
+class RailFence{
+ public static void main(String args[])throws Exception
+ {
+  RailFenceBasic rf=new RailFenceBasic(); 
+                Scanner scn=new Scanner(System.in);
+                int depth;
+   
+                String plainText,cipherText,decryptedText;
+                 
+                System.out.println("Enter plain text:");
+                plainText=scn.nextLine();
+                 
+                System.out.println("Enter depth for Encryption:");
+                depth=scn.nextInt();
+                
+  cipherText=rf.Encryption(plainText,depth);
+  System.out.println("Encrypted text is:\n"+cipherText);
+                 
+                decryptedText=rf.Decryption(cipherText, depth);
+                 
+  System.out.println("Decrypted text is:\n"+decryptedText);
+   
+ }
+}
+OUTPUT:
+
+ 
+
+
+
+
+
+
+Result: 
+Thus, the java  program to implement the Rail Fence Row column Transposition has been compiled and executed successfully.
+
+
+Ex.No: 2
+IMPLEMENTATION OF DES ALGORITHM
+AIM :
+	To implement the Data Encryption Standard Algorithm in Java.
+ALGORITHM:
+Step 1: Include the Header files required for implementing DES.
+Step 2: Declare the necessary variables.
+Step 3: Each operation such as conversion, shifting, perumataion, XOR are to be written separately as a function.
+Step 4: Get the input for each operation 
+Step 5: Set the Plain text from the user as a input.
+Step 6: Convert the Key into Binary form using conversion function, which converts (hex to bin)
+Step 7: Convert the Plain Text into Binary form using conversion function, which converts (hex to bin)
+Step 8: Perform of first round of Permutation
+Step 9: Begin the Shifting operation (single and double) for the keys and End the shift 
+Step 10: Begin the Generation of 16 key using make key () and End the key generation.
+Step 11: Perform 16 rounds of Encryption
+Step 12: Perform 16 rounds of Decryption
+Step 13: Print the Decrypted Plain Text.
+
+PROGRAM:
+import java.util.*;
+
+class DES {
+	// Initial Permutation table
+	private static final byte[] IP = { 
+		58, 50, 42, 34, 26, 18, 10, 2,
+		60, 52, 44, 36, 28, 20, 12, 4,
+		62, 54, 46, 38, 30, 22, 14, 6,
+		64, 56, 48, 40, 32, 24, 16, 8,
+		57, 49, 41, 33, 25, 17, 9,  1,
+		59, 51, 43, 35, 27, 19, 11, 3,
+		61, 53, 45, 37, 29, 21, 13, 5,
+		63, 55, 47, 39, 31, 23, 15, 7
+	};
+	
+	// Permuted Choice 1 table
+	private static final byte[] PC1 = {
+		57, 49, 41, 33, 25, 17, 9,
+		1,  58, 50, 42, 34, 26, 18,
+		10, 2,  59, 51, 43, 35, 27,
+		19, 11, 3,  60, 52, 44, 36,
+		63, 55, 47, 39, 31, 23, 15,
+		7,  62, 54, 46, 38, 30, 22,
+		14, 6,  61, 53, 45, 37, 29,
+		21, 13, 5,  28, 20, 12, 4
+	};
+	
+	// Permuted Choice 2 table
+	private static final byte[] PC2 = {
+		14, 17, 11, 24, 1,  5,
+		3,  28, 15, 6,  21, 10,
+		23, 19, 12, 4,  26, 8,
+		16, 7,  27, 20, 13, 2,
+		41, 52, 31, 37, 47, 55,
+		30, 40, 51, 45, 33, 48,
+		44, 49, 39, 56, 34, 53,
+		46, 42, 50, 36, 29, 32
+	};
+	
+	// Array to store the number of rotations that are to be done on each round
+	private static final byte[] rotations = {
+		1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1
+	};
+	
+	// Expansion (aka P-box) table
+	private static final byte[] E = {
+		32, 1,  2,  3,  4,  5,
+		4,  5,  6,  7,  8,  9,
+		8,  9,  10, 11, 12, 13,
+		12, 13, 14, 15, 16, 17,
+		16, 17, 18, 19, 20, 21,
+		20, 21, 22, 23, 24, 25,
+		24, 25, 26, 27, 28, 29,
+		28, 29, 30, 31, 32, 1
+	};
+	
+	// S-boxes (i.e. Substitution boxes)
+	private static final byte[][] S = { {
+		14, 4,  13, 1,  2,  15, 11, 8,  3,  10, 6,  12, 5,  9,  0,  7,
+		0,  15, 7,  4,  14, 2,  13, 1,  10, 6,  12, 11, 9,  5,  3,  8,
+		4,  1,  14, 8,  13, 6,  2,  11, 15, 12, 9,  7,  3,  10, 5,  0,
+		15, 12, 8,  2,  4,  9,  1,  7,  5,  11, 3,  14, 10, 0,  6,  13
+	}, {
+		15, 1,  8,  14, 6,  11, 3,  4,  9,  7,  2,  13, 12, 0,  5,  10,
+		3,  13, 4,  7,  15, 2,  8,  14, 12, 0,  1,  10, 6,  9,  11, 5,
+		0,  14, 7,  11, 10, 4,  13, 1,  5,  8,  12, 6,  9,  3,  2,  15,
+		13, 8,  10, 1,  3,  15, 4,  2,  11, 6,  7,  12, 0,  5,  14, 9
+	}, {
+		10, 0,  9,  14, 6,  3,  15, 5,  1,  13, 12, 7,  11, 4,  2,  8,
+		13, 7,  0,  9,  3,  4,  6,  10, 2,  8,  5,  14, 12, 11, 15, 1,
+		13, 6,  4,  9,  8,  15, 3,  0,  11, 1,  2,  12, 5,  10, 14, 7,
+		1,  10, 13, 0,  6,  9,  8,  7,  4,  15, 14, 3,  11, 5,  2,  12
+	}, {
+		7,  13, 14, 3,  0,  6,  9,  10, 1,  2,  8,  5,  11, 12, 4,  15,
+		13, 8,  11, 5,  6,  15, 0,  3,  4,  7,  2,  12, 1,  10, 14, 9,
+		10, 6,  9,  0,  12, 11, 7,  13, 15, 1,  3,  14, 5,  2,  8,  4,
+		3,  15, 0,  6,  10, 1,  13, 8,  9,  4,  5,  11, 12, 7,  2,  14
+	}, {
+		2,  12, 4,  1,  7,  10, 11, 6,  8,  5,  3,  15, 13, 0,  14, 9,
+		14, 11, 2,  12, 4,  7,  13, 1,  5,  0,  15, 10, 3,  9,  8,  6,
+		4,  2,  1,  11, 10, 13, 7,  8,  15, 9,  12, 5,  6,  3,  0,  14,
+		11, 8,  12, 7,  1,  14, 2,  13, 6,  15, 0,  9,  10, 4,  5,  3
+	}, {
+		12, 1,  10, 15, 9,  2,  6,  8,  0,  13, 3,  4,  14, 7,  5,  11,
+		10, 15, 4,  2,  7,  12, 9,  5,  6,  1,  13, 14, 0,  11, 3,  8,
+		9,  14, 15, 5,  2,  8,  12, 3,  7,  0,  4,  10, 1,  13, 11, 6,
+		4,  3,  2,  12, 9,  5,  15, 10, 11, 14, 1,  7,  6,  0,  8,  13
+	}, {
+		4,  11, 2,  14, 15, 0,  8,  13, 3,  12, 9,  7,  5,  10, 6,  1,
+		13, 0,  11, 7,  4,  9,  1,  10, 14, 3,  5,  12, 2,  15, 8,  6,
+		1,  4,  11, 13, 12, 3,  7,  14, 10, 15, 6,  8,  0,  5,  9,  2,
+		6,  11, 13, 8,  1,  4,  10, 7,  9,  5,  0,  15, 14, 2,  3,  12
+	}, {
+		13, 2,  8,  4,  6,  15, 11, 1,  10, 9,  3,  14, 5,  0,  12, 7,
+		1,  15, 13, 8,  10, 3,  7,  4,  12, 5,  6,  11, 0,  14, 9,  2,
+		7,  11, 4,  1,  9,  12, 14, 2,  0,  6,  10, 13, 15, 3,  5,  8,
+		2,  1,  14, 7,  4,  10, 8,  13, 15, 12, 9,  0,  3,  5,  6,  11
+	} };
+	
+	// Permutation table
+	private static final byte[] P = {
+		16, 7,  20, 21,
+		29, 12, 28, 17,
+		1,  15, 23, 26,
+		5,  18, 31, 10,
+		2,  8,  24, 14,
+		32, 27, 3,  9,
+		19, 13, 30, 6,
+		22, 11, 4,  25
+	};
+	
+	// Final permutation (aka Inverse permutation) table
+	private static final byte[] FP = {
+		40, 8, 48, 16, 56, 24, 64, 32,
+		39, 7, 47, 15, 55, 23, 63, 31,
+		38, 6, 46, 14, 54, 22, 62, 30,
+		37, 5, 45, 13, 53, 21, 61, 29,
+		36, 4, 44, 12, 52, 20, 60, 28,
+		35, 3, 43, 11, 51, 19, 59, 27,
+		34, 2, 42, 10, 50, 18, 58, 26,
+		33, 1, 41, 9, 49, 17, 57, 25
+	};
+	
+	// 28 bits each, used as storage in the KS (Key Structure) rounds to 
+	// generate round keys (aka subkeys)
+	private static int[] C = new int[28];
+	private static int[] D = new int[28];
+	
+	// Decryption requires the 16 subkeys to be used in the exact same process
+	// as encryption, with the only difference being that the keys are used
+	// in reverse order, i.e. last key is used first and so on. Hence, during
+	// encryption when the keys are first generated, they are stored in this
+	// array. In case we wish to separate the encryption and decryption
+	// programs, then we need to generate the subkeys first in order, store
+	// them and then use them in reverse order.
+	private static int[][] subkey = new int[16][48];
+	
+	public static void main(String args[]) {
+		System.out.println("Enter the input as a 16 character hexadecimal value:");
+		String input = new Scanner(System.in).nextLine();
+		int inputBits[] = new int[64];
+		// inputBits will store the 64 bits of the input as a an int array of
+		// size 64. This program uses int arrays to store bits, for the sake
+		// of simplicity. For efficient programming, use long data type. But
+		// it increases program complexity which is unnecessary for this
+		// context.
+		for(int i=0 ; i < 16 ; i++) {
+			// For every character in the 16 bit input, we get its binary value
+			// by first parsing it into an int and then converting to a binary
+			// string
+			String s = Integer.toBinaryString(Integer.parseInt(input.charAt(i) + "", 16));
+			
+			// Java does not add padding zeros, i.e. 5 is returned as 111 but
+			// we require 0111. Hence, this while loop adds padding 0's to the
+			// binary value.
+			while(s.length() < 4) {
+				s = "0" + s;
+			}
+			// Add the 4 bits we have extracted into the array of bits.
+			for(int j=0 ; j < 4 ; j++) {
+				inputBits[(4*i)+j] = Integer.parseInt(s.charAt(j) + "");
+			}
+		}
+		
+		// Similar process is followed for the 16 bit key
+		System.out.println("Enter the key as a 16 character hexadecimal value:");
+		String key = new Scanner(System.in).nextLine();
+		int keyBits[] = new int[64];
+		for(int i=0 ; i < 16 ; i++) {
+			String s = Integer.toBinaryString(Integer.parseInt(key.charAt(i) + "", 16));
+			while(s.length() < 4) {
+				s = "0" + s;
+			}
+			for(int j=0 ; j < 4 ; j++) {
+				keyBits[(4*i)+j] = Integer.parseInt(s.charAt(j) + "");
+			}
+		}
+		
+		// permute(int[] inputBits, int[] keyBits, boolean isDecrypt)
+		// method is used here. This allows encryption and decryption to be
+		// done in the same method, reducing code.
+		System.out.println("\n+++ ENCRYPTION +++");
+		int outputBits[] = permute(inputBits, keyBits, false);
+		System.out.println("\n+++ DECRYPTION +++");
+		permute(outputBits, keyBits, true);
+	}
+	
+	private static int[] permute(int[] inputBits, int[] keyBits, boolean isDecrypt) {
+		// Initial permutation step takes input bits and permutes into the
+		// newBits array
+		int newBits[] = new int[inputBits.length];
+		for(int i=0 ; i < inputBits.length ; i++) {
+			newBits[i] = inputBits[IP[i]-1];
+		}
+		
+		// 16 rounds will start here
+		// L and R arrays are created to store the Left and Right halves of the
+		// subkey respectively
+		int L[] = new int[32];
+		int R[] = new int[32];
+		int i;
+		
+		// Permuted Choice 1 is done here
+		for(i=0 ; i < 28 ; i++) {
+			C[i] = keyBits[PC1[i]-1];
+		}
+		for( ; i < 56 ; i++) {
+			D[i-28] = keyBits[PC1[i]-1];
+		}
+		
+		// After PC1 the first L and R are ready to be used and hence looping
+		// can start once L and R are initialized
+		System.arraycopy(newBits, 0, L, 0, 32);
+		System.arraycopy(newBits, 32, R, 0, 32);
+		System.out.print("\nL0 = ");
+		displayBits(L);
+		System.out.print("R0 = ");
+		displayBits(R);
+		for(int n=0 ; n < 16 ; n++) {
+			System.out.println("\n-------------");
+			System.out.println("Round " + (n+1) + ":");
+			// newR is the new R half generated by the Fiestel function. If it
+			// is encrpytion then the KS method is called to generate the
+			// subkey otherwise the stored subkeys are used in reverse order
+			// for decryption.
+			int newR[] = new int[0];
+			if(isDecrypt) {
+				newR = fiestel(R, subkey[15-n]);
+				System.out.print("Round key = ");
+				displayBits(subkey[15-n]);
+			} else {
+				newR = fiestel(R, KS(n, keyBits));
+				System.out.print("Round key = ");
+				displayBits(subkey[n]);
+			}
+			// xor-ing the L and new R gives the new L value. new L is stored
+			// in R and new R is stored in L, thus exchanging R and L for the
+			// next round.
+			int newL[] = xor(L, newR);
+			L = R;
+			R = newL;
+			System.out.print("L = ");
+			displayBits(L);
+			System.out.print("R = ");
+			displayBits(R);
+		}
+		
+		// R and L has the two halves of the output before applying the final
+		// permutation. This is called the "Preoutput".
+		int output[] = new int[64];
+		System.arraycopy(R, 0, output, 0, 32);
+		System.arraycopy(L, 0, output, 32, 32);
+		int finalOutput[] = new int[64];
+		// Applying FP table to the preoutput, we get the final output:
+		// Encryption => final output is ciphertext
+		// Decryption => final output is plaintext
+		for(i=0 ; i < 64 ; i++) {
+			finalOutput[i] = output[FP[i]-1];
+		}
+		
+		// Since the final output is stored as an int array of bits, we convert
+		// it into a hex string:
+		String hex = new String();
+		for(i=0 ; i < 16 ; i++) {
+			String bin = new String();
+			for(int j=0 ; j < 4 ; j++) {
+				bin += finalOutput[(4*i)+j];
+			}
+			int decimal = Integer.parseInt(bin, 2);
+			hex += Integer.toHexString(decimal);
+		}
+		if(isDecrypt) {
+			System.out.print("Decrypted text: ");
+		
+		} else {
+			System.out.print("Encrypted text: ");
+		}
+		System.out.println(hex.toUpperCase());
+		return finalOutput;
+	}
+	
+	private static int[] KS(int round, int[] key) {
+		// The KS (Key Structure) function generates the round keys.
+		// C1 and D1 are the new values of C and D which will be generated in
+		// this round.
+		int C1[] = new int[28];
+		int D1[] = new int[28];
+		
+		// The rotation array is used to set how many rotations are to be done
+		int rotationTimes = (int) rotations[round];
+		// leftShift() method is used for rotation (the rotation is basically)
+		// a left shift operation, hence the name.
+		C1 = leftShift(C, rotationTimes);
+		D1 = leftShift(D, rotationTimes);
+		// CnDn stores the combined C1 and D1 halves
+		int CnDn[] = new int[56];
+		System.arraycopy(C1, 0, CnDn, 0, 28);
+		System.arraycopy(D1, 0, CnDn, 28, 28);
+		// Kn stores the subkey, which is generated by applying the PC2 table
+		// to CnDn
+		int Kn[] = new int[48];
+		for(int i=0 ; i < Kn.length ; i++) {
+			Kn[i] = CnDn[PC2[i]-1];
+		}
+		
+		// Now we store C1 and D1 in C and D respectively, thus becoming the
+		// old C and D for the next round. Subkey is stored and returned.
+		subkey[round] = Kn;
+		C = C1;
+		D = D1;
+		return Kn;
+	}
+	
+	private static int[] fiestel(int[] R, int[] roundKey) {
+		// Method to implement Fiestel function.
+		// First the 32 bits of the R array are expanded using E table.
+		int expandedR[] = new int[48];
+		for(int i=0 ; i < 48 ; i++) {
+			expandedR[i] = R[E[i]-1];
+		}
+		// We xor the expanded R and the generated round key
+		int temp[] = xor(expandedR, roundKey);
+		// The S boxes are then applied to this xor result and this is the
+		// output of the Fiestel function.
+		int output[] = sBlock(temp);
+		return output;
+	}
+	
+	private static int[] xor(int[] a, int[] b) {
+		// Simple xor function on two int arrays
+		int answer[] = new int[a.length];
+		for(int i=0 ; i < a.length ; i++) {
+			answer[i] = a[i]^b[i];
+		}
+		return answer;
+	}
+	
+	private static int[] sBlock(int[] bits) {
+		// S-boxes are applied in this method.
+		int output[] = new int[32];
+		// We know that input will be of 32 bits, hence we will loop 32/4 = 8
+		// times (divided by 4 as we will take 4 bits of input at each
+		// iteration).
+		for(int i=0 ; i < 8 ; i++) {
+			// S-box requires a row and a column, which is found from the
+			// input bits. The first and 6th bit of the current iteration
+			// (i.e. bits 0 and 5) gives the row bits.
+			int row[] = new int [2];
+			row[0] = bits[6*i];
+			row[1] = bits[(6*i)+5];
+			String sRow = row[0] + "" + row[1];
+			// Similarly column bits are found, which are the 4 bits between
+			// the two row bits (i.e. bits 1,2,3,4)
+			int column[] = new int[4];
+			column[0] = bits[(6*i)+1];
+			column[1] = bits[(6*i)+2];
+			column[2] = bits[(6*i)+3];
+			column[3] = bits[(6*i)+4];
+			String sColumn = column[0] +""+ column[1] +""+ column[2] +""+ column[3];
+			// Converting binary into decimal value, to be given into the
+			// array as input
+			int iRow = Integer.parseInt(sRow, 2);
+			int iColumn = Integer.parseInt(sColumn, 2);
+			int x = S[i][(iRow*16) + iColumn];
+			// We get decimal value of the S-box here, but we need to convert
+			// it into binary:
+			String s = Integer.toBinaryString(x);
+			// Padding is required since Java returns a decimal '5' as '111' in
+			// binary, when we require '0111'.
+			while(s.length() < 4) {
+				s = "0" + s;
+			}
+			// The binary bits are appended to the output
+			for(int j=0 ; j < 4 ; j++) {
+				output[(i*4) + j] = Integer.parseInt(s.charAt(j) + "");
+			}
+		}
+		// P table is applied to the output and this is the final output of one
+		// S-box round:
+		int finalOutput[] = new int[32];
+		for(int i=0 ; i < 32 ; i++) {
+			finalOutput[i] = output[P[i]-1];
+		}
+		return finalOutput;
+	}
+	
+	private static int[] leftShift(int[] bits, int n) {
+		// Left shifting takes place here, i.e. each bit is rotated to the left
+		// and the leftmost bit is stored at the rightmost bit. This is a left
+		// shift operation.
+		int answer[] = new int[bits.length];
+		System.arraycopy(bits, 0, answer, 0, bits.length);
+		for(int i=0 ; i < n ; i++) {
+			int temp = answer[0];
+			for(int j=0 ; j < bits.length-1 ; j++) {
+				answer[j] = answer[j+1];
+			}
+			answer[bits.length-1] = temp;
+		}
+		return answer;
+	}
+	
+	private static void displayBits(int[] bits) {
+		// Method to display int array bits as a hexadecimal string.
+		for(int i=0 ; i < bits.length ; i+=4) {
+			String output = new String();
+			for(int j=0 ; j < 4 ; j++) {
+				output += bits[i+j];
+			}
+			System.out.print(Integer.toHexString(Integer.parseInt(output, 2)));
+		}
+		System.out.println();
+	}}
+
+OUTPUT:
+Output:
+Enter the input as a 16 character hexadecimal value:
+123456ABCD132536
+Enter the key as a 16 character hexadecimal value:
+AABB09182736CCDD
++++ ENCRYPTION +++
+L0 = 14a7d678
+R0 = 18ca18ad
+-------------
+Round 1:
+Round key = 194cd072de8c
+L = 18ca18ad
+R = 5a78e394
+-------------
+Round 2:
+Round key = 4568581abcce
+L = 5a78e394
+R = 4a1210f6
+-------------
+Round 3:
+Round key = 06eda4acf5b5
+L = 4a1210f6
+R = b8089591
+-------------
+Round 4:
+Round key = da2d032b6ee3
+L = b8089591
+R = 236779c2
+-------------
+Round 5:
+Round key = 69a629fec913
+L = 236779c2
+R = a15a4b87
+-------------
+Round 6:
+Round key = c1948e87475e
+L = a15a4b87
+R = 2e8f9c65
+-------------
+Round 7:
+Round key = 708ad2ddb3c0
+L = 2e8f9c65
+R = a9fc20a3
+-------------
+Round 8:
+Round key = 34f822f0c66d
+L = a9fc20a3
+R = 308bee97
+-------------
+Round 9:
+Round key = 84bb4473dccc
+L = 308bee97
+R = 10af9d37
+-------------
+Round 10:
+Round key = 02765708b5bf
+L = 10af9d37
+R = 6ca6cb20
+-------------
+Round 11:
+Round key = 6d5560af7ca5
+L = 6ca6cb20
+R = ff3c485f
+-------------
+Round 12:
+Round key = c2c1e96a4bf3
+L = ff3c485f
+R = 22a5963b
+-------------
+Round 13:
+Round key = 99c31397c91f
+L = 22a5963b
+R = 387ccdaa
+-------------
+Round 14:
+Round key = 251b8bc717d0
+L = 387ccdaa
+R = bd2dd2ab
+-------------
+Round 15:
+Round key = 3330c5d9a36d
+L = bd2dd2ab
+R = cf26b472
+-------------
+Round 16:
+Round key = 181c5d75c66d
+L = cf26b472
+R = 19ba9212
+Encrypted text: C0B7A8D05F3A829C
+
++++ DECRYPTION +++
+L0 = 19ba9212
+R0 = cf26b472
+-------------
+Round 1:
+Round key = 181c5d75c66d
+L = cf26b472
+R = bd2dd2ab
+-------------
+Round 2:
+Round key = 3330c5d9a36d
+L = bd2dd2ab
+R = 387ccdaa
+-------------
+Round 3:
+Round key = 251b8bc717d0
+L = 387ccdaa
+R = 22a5963b
+-------------
+Round 4:
+Round key = 99c31397c91f
+L = 22a5963b
+R = ff3c485f
+-------------
+Round 5:
+Round key = c2c1e96a4bf3
+L = ff3c485f
+R = 6ca6cb20
+-------------
+Round 6:
+Round key = 6d5560af7ca5
+L = 6ca6cb20
+R = 10af9d37
+-------------
+Round 7:
+Round key = 02765708b5bf
+L = 10af9d37
+R = 308bee97
+-------------
+Round 8:
+Round key = 84bb4473dccc
+L = 308bee97
+R = a9fc20a3
+-------------
+Round 9:
+Round key = 34f822f0c66d
+L = a9fc20a3
+R = 2e8f9c65
+-------------
+Round 10:
+Round key = 708ad2ddb3c0
+L = 2e8f9c65
+R = a15a4b87
+-------------
+Round 11:
+Round key = c1948e87475e
+L = a15a4b87
+R = 236779c2
+-------------
+Round 12:
+Round key = 69a629fec913
+L = 236779c2
+R = b8089591
+-------------
+Round 13:
+Round key = da2d032b6ee3
+L = b8089591
+R = 4a1210f6
+-------------
+Round 14:
+Round key = 06eda4acf5b5
+L = 4a1210f6
+R = 5a78e394
+-------------
+Round 15:
+Round key = 4568581abcce
+L = 5a78e394
+R = 18ca18ad
+-------------
+Round 16:
+Round key = 194cd072de8c
+L = 18ca18ad
+R = 14a7d678
+Decrypted text: 123456ABCD132536
+Result: 
+Thus, the java  program to implement the DES algorithm has been compiled and executed successfully.
+Ex.No: 3.A
+IMPLEMENTATION OF RSA ALGORITHM
+AIM :
+	To implement the RSA Encryption Algorithm in Java.
+ALGORITHM:
+Step 1: Include the required header files for implementing RSA algorithm.
+Step 2: Declare the necessary variables.
+Step 3: Get the prime numbers from the user and check the primality.
+Step 4: Get the input message from the user.
+Step 5: Calculate the possible values for e and d using ce() and cd().
+Step 6: Encrypt the input message with the help of the key length
+Step 7: Decrypt the message using decrypt ().
+Step 8: Print the Decrypted Plain Text.
+
+PROGRAM:
+import java.util.*;
+class RSA1
+{
+public static void main(String args[])
+{
+Scanner sc=new Scanner(System.in);
+System.out.println("Enter 2 Prime nos");
+int p=sc.nextInt();
+int q=sc.nextInt();
+int n=p*q;
+int fi=(p-1)*(q-1);
+System.out.println("Enter the value for e");
+int e=sc.nextInt();
+while(true)
+{
+if(findGCD(fi,e)!=1)
+{
+System.out.println("Enter a valid value for e");
+e=sc.nextInt();
+}
+else
+break;
+}
+int d= findD(e,fi);
+System.out.println("Enter plain text(number):");
+int m=sc.nextInt();
+int c= (int)(Math.pow(m,e))%n;
+int x= (int)(Math.pow(c,d))%n;
+System.out.println("Cipher text is: "+c);
+if(x==m)
+System.out.println("Inputs matched.");
+else
+System.out.println("Inputs mismatched.");
+
+}
+static int findD(int e, int fi)
+{
+int x;
+for(int i=1;i<=fi;i++)
+{
+x=(i*e)%fi;
+if(x==1)
+return i;
+}
+return 0;
+}
+
+static int findGCD(int number1, int number2) {
+//base case
+if(number2 == 0){
+return number1;
+}
+return findGCD(number2, number1%number2);
+}}
+OUTPUT:
+ 
+
+Result:
+	Thus, the java  program to implement the RSA algorithm has been compiled and executed successfully.
+Ex.No: 3.B
+IMPLEMENTATION OF DIFFIE-HELLMAN
+AIM :
+	To implement the Diffie-Hellman Key Exchange Algorithm in Java.
+
+ALGORITHM:
+
+Step 1: Include the requires header files for implementing Diffiee Hellman
+Step 2: Declare the necessary variables.
+Step 3: Calculate the length of the key, by declaring key as a long int.
+Step 4: Now, the two persons are aware of the key values n and g.
+Step 5: Get the values for the two persons from the user.
+Step 6: Print the Key for the two persons separately
+
+PROGRAM:
+import java.util.*;
+class DiffieHellman
+{
+public static void main(String args[])
+{
+Scanner sc = new Scanner(System.in);
+System.out.println("Enter the value of Xa & Xb");
+int Xa=sc.nextInt();
+int Xb=sc.nextInt();
+System.out.println("Enter a Prime no. p");
+int p=sc.nextInt();
+System.out.println("Enter Primitive Root a, such that a<p");
+int a=sc.nextInt();
+int Ya=(int)((Math.pow(a,Xa))%p);
+int Yb=(int)((Math.pow(a,Xb))%p);
+int Ka=(int)((Math.pow(Yb,Xa))%p);
+int Kb=(int)((Math.pow(Ya,Xb))%p);
+System.out.println("The Value of Ya is"+Ya);
+System.out.println("The Value of Yb is" +Yb);
+System.out.println("Key at A's Side Ka="+Ka);
+System.out.println("Key at B's Side Kb="+Kb);
+if(Ka==Kb)
+{
+System.out.println("Diffie-Hellman Key Exchange has successful");
+}
+else
+{
+System.out.println("Key Exchange has failed");
+}
+}
+}
+
+
+OUTPUT:
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+Result:
+Thus, the java program to implement the Diffiee Hellman Key exchange algorithm has been compiled and executed successfully.
+
+
+
+Ex.No: 3.C
+IMPLEMENTATION OF MD5 ALGORITHM
+AIM :
+	To implement the MD5Algorithm in Java.
+ALGORITHM:
+
+Step 1: Include the required header files for implementing MD 5
+Step 2: Declare union which consists of the Digest array.
+Step 3: Make the array elements as unsigned integer array.
+Step 4: Perform Left rotation r by N bits.
+Step 5: Generate the key value by using clactable(),which return the unsigned values for the key.
+Step 6: Initialize the Digest array and sort the array using rotation.
+Step 7: Print the encrypted message.	
+
+PROGRAM:
+import java.io.*;
+public class MD5
+{
+    private static final int   INIT_A     = 0x67452301;
+    private static final int   INIT_B     = (int) 0xEFCDAB89L;
+    private static final int   INIT_C     = (int) 0x98BADCFEL;
+    private static final int   INIT_D     = 0x10325476;
+    private static final int[] SHIFT_AMTS = { 7, 12, 17, 22, 5, 9, 14, 20, 4,
+            11, 16, 23, 6, 10, 15, 21    };
+    private static final int[] TABLE_T    = new int[64];
+    static
+    {
+        for (int i = 0; i < 64; i++)
+            TABLE_T[i] = (int) (long) ((1L << 32) * Math.abs(Math.sin(i + 1)));
+    }
+ 
+    public static byte[] computeMD5(byte[] message)
+    {
+        int messageLenBytes = message.length;
+        int numBlocks = ((messageLenBytes + 8) >>> 6) + 1;
+        int totalLen = numBlocks << 6;
+        byte[] paddingBytes = new byte[totalLen - messageLenBytes];
+        paddingBytes[0] = (byte) 0x80;
+        long messageLenBits = (long) messageLenBytes << 3;
+        for (int i = 0; i < 8; i++)
+        {
+            paddingBytes[paddingBytes.length - 8 + i] = (byte) messageLenBits;
+            messageLenBits >>>= 8;
+        }
+        int a = INIT_A;
+        int b = INIT_B;
+        int c = INIT_C;
+        int d = INIT_D;
+        int[] buffer = new int[16];
+        for (int i = 0; i < numBlocks; i++)
+        {
+            int index = i << 6;
+            for (int j = 0; j < 64; j++, index++)
+                buffer[j >>> 2] = ((int) ((index < messageLenBytes) ? message[index]
+                        : paddingBytes[index - messageLenBytes]) << 24)
+                        | (buffer[j >>> 2] >>> 8);
+            int originalA = a;
+            int originalB = b;
+            int originalC = c;
+            int originalD = d;
+            for (int j = 0; j < 64; j++)
+            {
+                int div16 = j >>> 4;
+                int f = 0;
+                int bufferIndex = j;
+                switch (div16)
+                {
+                    case 0:
+                        f = (b & c) | (~b & d);
+                        break;
+                    case 1:
+                        f = (b & d) | (c & ~d);
+                        bufferIndex = (bufferIndex * 5 + 1) & 0x0F;
+                        break;
+                    case 2:
+                        f = b ^ c ^ d;
+                        bufferIndex = (bufferIndex * 3 + 5) & 0x0F;
+                        break;
+                    case 3:
+                        f = c ^ (b | ~d);
+                        bufferIndex = (bufferIndex * 7) & 0x0F;
+                        break;
+                }
+                int temp = b
+                        + Integer.rotateLeft(a + f + buffer[bufferIndex]
+                                + TABLE_T[j],
+                                SHIFT_AMTS[(div16 << 2) | (j & 3)]);
+                a = d;
+                d = c;
+                c = b;
+                b = temp;
+            }
+            a += originalA;
+            b += originalB;
+            c += originalC;
+            d += originalD;
+        }
+        byte[] md5 = new byte[16];
+        int count = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            int n = (i == 0) ? a : ((i == 1) ? b : ((i == 2) ? c : d));
+            for (int j = 0; j < 4; j++)
+            {
+                md5[count++] = (byte) n;
+                n >>>= 8;
+            }
+        }
+        return md5;
+    }
+ 
+    public static String toHexString(byte[] b)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < b.length; i++)
+        {
+            sb.append(String.format("%02X", b[i] & 0xFF));
+        }
+        return sb.toString();
+    }
+ 
+    public static void main(String[] args)
+    {
+        String[] testStrings = { "", "Sanfoundry", "Message Digest",
+                "abcdefghijklmnopqrstuvwxyz" };
+        for (String s : testStrings)
+            System.out.println("0x" + toHexString(computeMD5(s.getBytes()))
+                    + " <== \"" + s + "\"");
+        return;
+    }
+}
+
+OUTPUT:
+
+ 
+
+
+
+Result:
+Thus, the java program to implement MD5 algorithm has been compiled and executed successfully.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ex.No: 4			IMPLEMENTATION OF SHA-1
+AIM :
+	To implement the SHA-1 Algorithm in Java.
+
+ALGORITHM:
+Step 1: Include the required header files for implementing SHA 1 algorithm
+Step 2: Define a structure which consists of input data, length of the data and bit length.
+Step 3: Perform transformation from binary data to character data.
+Step 4: Now, update the SHA function to the Character data.
+Step 5: Print the hash value for the character using print _hash ()
+
+PROGRAM:
+import java.io.*;
+public class SHA1 {
+
+    /*
+     * Bitwise rotate a 32-bit number to the left
+     */
+    private static int rol(int num, int cnt) {
+        return (num << cnt) | (num >>> (32 - cnt));
+    }
+
+    /*
+     * Take a string and return the base64 representation of its SHA-1.
+     */
+    public static String encode(String str) {
+
+        // Convert a string to a sequence of 16-word blocks, stored as an array.
+        // Append padding bits and the length, as described in the SHA1 standard
+
+        byte[] x = str.getBytes();
+        int[] blks = new int[(((x.length + 8) >> 6) + 1) * 16];
+        int i;
+
+        for(i = 0; i < x.length; i++) {
+            blks[i >> 2] |= x[i] << (24 - (i % 4) * 8);
+        }
+
+        blks[i >> 2] |= 0x80 << (24 - (i % 4) * 8);
+        blks[blks.length - 1] = x.length * 8;
+
+        // calculate 160 bit SHA1 hash of the sequence of blocks
+
+        int[] w = new int[80];
+
+        int a =  1732584193;
+        int b = -271733879;
+        int c = -1732584194;
+        int d =  271733878;
+        int e = -1009589776;
+
+        for(i = 0; i < blks.length; i += 16) {
+            int olda = a;
+            int oldb = b;
+            int oldc = c;
+            int oldd = d;
+            int olde = e;
+
+            for(int j = 0; j < 80; j++) {
+                w[j] = (j < 16) ? blks[i + j] :
+                       ( rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1) );
+
+                int t = rol(a, 5) + e + w[j] +
+                   ( (j < 20) ?  1518500249 + ((b & c) | ((~b) & d))
+                   : (j < 40) ?  1859775393 + (b ^ c ^ d)
+                   : (j < 60) ? -1894007588 + ((b & c) | (b & d) | (c & d))
+                   : -899497514 + (b ^ c ^ d) );
+                e = d;
+                d = c;
+                c = rol(b, 30);
+                b = a;
+                a = t;
+              }
+
+              a = a + olda;
+              b = b + oldb;
+              c = c + oldc;
+              d = d + oldd;
+              e = e + olde;
+
+          }
+System.out.println(Integer.toHexString(a));
+System.out.println(Integer.toHexString(b));
+
+System.out.println(Integer.toHexString(c));
+
+System.out.println(Integer.toHexString(d));
+System.out.println(Integer.toHexString(e));
+
+         // Convert 160 bit hash to base64
+          int[] words = {a,b,c,d,e,0};
+          byte[] base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".getBytes();
+          byte[] result = new byte[28];
+
+ for (i=0; i<27; i++) {
+             int start=i*6;
+             int word=start>>5;
+            int offset=start & 0x1f;
+             if (offset <= 26) {
+                 result[i] = base64[(words[word] >> (26 - offset)) & 0x3F];
+             } else if (offset == 28) {
+                 result[i] = base64[(((words[word] & 0x0F) << 2) |
+                                    ((words[word+1] >> 30) & 0x03)) & 0x3F];
+             } else {
+                 result[i] = base64[(((words[word] & 0x03) << 4) |
+                                    ((words[word+1] >> 28) & 0x0F)) & 0x3F];
+             }
+          }
+          result[27]='=';
+
+          return new String(result);
+    }
+     public static void main(String args[]) {
+//        System.out.println(encode(args[0]));
+
+encode(args[0]);
+     }
+}
+
+Output:
+
+ba7816bf8f0ioc1fea414ode5dae2223boo361a396177a9cb410ff61f20015ad248d6a61d2063ab8e5c02b930c33ce4596ff2167f6ccdd419db06ccdc76e5c9914fb928191c7e2848a497200e04bd39ccc7112cd0a.
+
+Result:
+	Thus, the C program to implement the SHA 1 algorithm has been compiled and executed successfully.
+
+Ex.No. 5		IMPLEMENT THE SIGNATURE SCHEME -   
+                                   DIGITAL  SIGNATURE STANDARD
+Aim:
+	To Implement a SIGNATURE SCHEME - Digital Signature Standard in java
+
+Algorithm:
+
+Step 1: Start the program.
+Step 2: Declare the class and required variables.
+Step 3: Implement the SIGNATURE SCHEME - Digital Signature Standard
+Step 4: Create the object for the class in the main program.
+Step 5: Access the member functions using the objects.
+Step 6: Stop the program.
+
+PROGRAM CODE
+
+PublicKeyUtil.java
+
+importjava.io.File;
+importjava.io.FileInputStream;
+importjava.io.FileOutputStream;
+importjava.io.IOException;
+importjava.security.Key;
+importjava.security.KeyFactory;
+importjava.security.KeyPair;
+importjava.security.KeyPairGenerator;
+importjava.security.NoSuchAlgorithmException;
+importjava.security.PrivateKey;
+importjava.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+/*manual prepared by www.gr-solution.blogspot.com*/
+public class PublicKeyUtil {
+
+ /**
+  * Generates KeyPair specific to given algorithm
+  * 
+  * @param algorithm
+  * @return
+  * @throws NoSuchAlgorithmException
+  */
+public static KeyPairgetKeyPair(String algorithm)
+throwsNoSuchAlgorithmException {
+KeyPairGeneratorkeyPairGenerator = KeyPairGenerator
+    .getInstance(algorithm);
+returnkeyPairGenerator.generateKeyPair();
+ }
+
+ /**
+  * Return PublicKey from given KeyPair
+  * 
+  * @paramkeyPair
+  * @return
+  */
+public static PublicKeygetPublicKey(KeyPairkeyPair) {
+returnkeyPair.getPublic();
+ }
+
+ /**
+  * Return PrivateKey from given KeyPair
+  * 
+  * @paramkeyPair
+  * @return
+  */
+public static PrivateKeygetPrivateKey(KeyPairkeyPair) {
+returnkeyPair.getPrivate();
+ }
+/*manual prepared by www.gr-solution.blogspot.com*/
+ /**
+  * Convert key to string.
+  * 
+  * @param key
+  * 
+  * @return String representation of key
+  */
+public static String keyToString(Key key) {
+  /* Get key in encoding format */
+byte encoded[] = key.getEncoded();
+
+  /*
+   * Encodes the specified byte array into a String using Base64 encoding
+   * scheme
+   */
+  String encodedKey = Base64.getEncoder().encodeToString(encoded);
+
+returnencodedKey;
+ }
+
+ /**
+  * Save key to a file
+  * 
+  * @param key
+  *            : key to save into file
+  * @paramfileName
+  *            : File name to store
+  */
+public static void saveKey(Key key, String fileName) {
+byte[] keyBytes = key.getEncoded();
+  File keyFile = new File(fileName);
+FileOutputStreamfOutStream = null;
+try {
+fOutStream = new FileOutputStream(keyFile);
+fOutStream.write(keyBytes);
+  } catch (Exception e) {
+e.printStackTrace();
+  } finally {
+if (fOutStream != null) {
+try {
+fOutStream.close();
+    } catch (IOException e) {
+e.printStackTrace();
+    }
+   }
+  }
+ }
+
+ /**
+  * Returns the key stored in a file.
+  * 
+  * @paramfileName
+  * @return
+  * @throws Exception
+  */
+public static byte[] readKeyFromFile(String fileName) throws Exception {
+FileInputStreamkeyfis = new FileInputStream(fileName);
+byte[] key = new byte[keyfis.available()];
+keyfis.read(key);
+keyfis.close();
+return key;
+ }
+
+ /**
+  * Generates public key from encoded byte array.
+  * 
+  * @param encoded
+  * @param algorithm
+  * @return
+  * @throws Exception
+  */
+public static PublicKeyconvertArrayToPubKey(byte encoded[],
+   String algorithm) throws Exception {
+  X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encoded);
+KeyFactorykeyFactory = KeyFactory.getInstance(algorithm);
+PublicKeypubKey = keyFactory.generatePublic(pubKeySpec);
+
+returnpubKey;
+ }
+
+ /**
+  * Generates private key from encoded byte array.
+  * 
+  * @param encoded
+  * @param algorithm
+  * @return
+  * @throws Exception
+  */
+public static PrivateKeyconvertArrayToPriKey(byte encoded[],
+   String algorithm) throws Exception {
+  PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+KeyFactorykeyFactory = KeyFactory.getInstance(algorithm);
+PrivateKeypriKey = keyFactory.generatePrivate(keySpec);
+returnpriKey;
+ }
+
+}
+
+SignatureUtil.java
+
+importjava.io.BufferedInputStream;
+importjava.io.FileInputStream;
+importjava.io.FileOutputStream;
+importjava.security.PrivateKey;
+importjava.security.Signature;
+
+public class SignatureUtil {
+
+ /**
+  * Generates signature by taking file, PrivateKey and algorithm as input.
+  * 
+  * @paramfileName
+  *            : Generate signature for this file.
+  * @paramprivateKey
+  * @param algorithm
+  * @return
+  * @throws Exception
+  */
+public static byte[] getSignature(String fileName, PrivateKeyprivateKey,
+   String algorithm) throws Exception {
+
+  /* Get instance of Signature object */
+  Signature signature = Signature.getInstance(algorithm);
+
+  /* Initialize Signature object */
+signature.initSign(privateKey);
+
+  /* Feed data */
+feedData(signature, fileName);
+
+  /* Generate signature */
+byte[] finalSig = signature.sign();
+
+returnfinalSig;
+ }
+
+ /**
+  * Save signature to a file
+  * 
+  * @paramfileName
+  *            : Signature saved here
+  * @param signature
+  * @throws Exception
+  */
+public static void saveSignature(String fileName, byte[] signature)
+throws Exception {
+FileOutputStreamsigfos = new FileOutputStream(fileName);
+sigfos.write(signature);
+sigfos.close();
+ }
+
+ /**
+  * Read signature from a file and convert it into byte array.
+  * 
+  * @paramfileName
+  *            : contains signature information
+  * @return signature as byte array
+  * @throws Exception
+  */
+public static byte[] readSignatureFromFile(String fileName)
+throws Exception {
+returnPublicKeyUtil.readKeyFromFile(fileName);
+ }
+
+ /**
+  * Feed data to Signature instance
+  * 
+  * @param signature
+  * @paramfileName
+  * @throws Exception
+  */
+public static void feedData(Signature signature, String fileName)
+throws Exception {
+  /* Supply the Signature Object the Data to Be Signed */
+FileInputStreamfis = new FileInputStream(fileName);
+BufferedInputStreambufin = new BufferedInputStream(fis);
+byte[] buffer = new byte[1024];
+intlen;
+while ((len = bufin.read(buffer)) >= 0) {
+signature.update(buffer, 0, len);
+  }
+bufin.close();
+ }
+
+}
+TestDigitalSignature.java
+
+importjava.security.KeyPair;
+importjava.security.PrivateKey;
+importjava.security.PublicKey;
+importjava.security.Signature;
+
+//import PublicKeyUtil.*;
+//import SignatureUtil.*;
+
+public class TestDigitalSignature {
+public static void main(String args[]) throws Exception {
+  String file = "emp.txt";
+
+  /* Public key stored in this file */
+  String publicKeyFile = "publicKey.txt";
+
+  /* Signature of given file stored here */
+  String signatureFile = "siganture.txt";
+
+  /* Signature algorithm to get Signature instance */
+  String sigAlgorithm = "SHA1withDSA";
+
+  /* generate public and private keys */
+KeyPairkeyPair = PublicKeyUtil.getKeyPair("DSA");
+PublicKeypublicKey = keyPair.getPublic();
+PrivateKeyprivateKey = keyPair.getPrivate();
+
+  /* Generate signature for given file */
+byte signature[] = SignatureUtil.getSignature(file, privateKey,
+sigAlgorithm);
+
+  /* Save public key */
+PublicKeyUtil.saveKey(publicKey, publicKeyFile);
+
+  /* Save signature */
+SignatureUtil.saveSignature(signatureFile, signature);
+
+  // Verify Signature
+
+  /* Read public key from file */
+byte[] pubKeyBytes = PublicKeyUtil.readKeyFromFile(publicKeyFile);
+
+  /* Convert publick key bytes into PublicKey object */
+PublicKeypubKey = PublicKeyUtil.convertArrayToPubKey(pubKeyBytes,
+    "DSA");
+
+  /* Read signature from file */
+byte[] receivedSignature = SignatureUtil
+    .readSignatureFromFile(signatureFile);
+
+  /* Verify signature */
+  Signature verifySignature = Signature.getInstance(sigAlgorithm);
+
+  /* initialize signature object */
+verifySignature.initVerify(pubKey);
+
+  /* Feed data */
+SignatureUtil.feedData(verifySignature, file);
+
+  /* Verify signature */
+booleanisAuthenticated = verifySignature.verify(receivedSignature);
+
+if (isAuthenticated) {
+System.out.println("Data is authenticated");
+  } else {
+System.out.println("Data is not from expected sender");
+  }
+ }
+}
+
+
+Output:
+
+ 
+
+
+Result:
+	Thus,the implementation of SIGNATURE SCHEME using Digital Signature Standard has been done successfully
+
+
+Ex.No.6       DEMONSTRATE HOW TO PROVIDE SECURE 
+                   DATA  STORAGE, SECURE DATA TRANSMISSION  
+                  AND FOR REATING DIGITAL SIGNATURES (GNUPG).
+AIM:
+To Demonstrate how to provide secure data storage, secure data transmission and for creating digital signatures (GnuPG).
+
+PROCEDURE:
+In Version 2, Gpg4win includes the following programs:
+ • GnuPG 
+GnuPG forms the heart of Gpg4win – the actual encryption software. 
+• Kleopatra 
+The central certificate administration of Gpg4win, which ensures uniform user navigation for all cryptographic operations.
+ • GNU Privacy Assistant (GPA) is an alternative program for managing certificates, in addition to Kleopatra.
+ • GnuPG for Outlook (GpgOL) is an extension for Microsoft Outlook 2003 and 2007, which is used to sign and encrypt messages.
+ • GPG Explorer eXtension (GpgEX) is an extension for Windows Explorer which can be used to sign and encrypt files using the context menu. 
+• Claws Mail is a full e-mail program that offers very good support for GnuPG.
+If you are downloading Gpg4win from the Internet, please ensure that you obtain the file from a trustworthy site, e.g.: www.gpg4win.org. To start the installation, click on the following file after the download: 
+gpg4win-2.0.0.exe (or higher version number).
+The installation assistant will start and ask you for the language to be used with the installation process:
+ 
+Confirm your language selection with [ OK ]. 
+Afterwards you will see this welcome dialog:
+ 
+The next page displays the licensing agreement – it is only important if you wish to modify or forward Gpg4win. If you only want to use the software, you can do this right away – without reading the license.
+ 
+
+On the page that contains the selection of components you can decide which programs you want to install. A default selection has already been made for you. Yo can also install individual components at a later time.
+ Moving your mouse cursor over a component will display a brief description. Another useful feature is the display of required hard drive space for all selected components.
+ 
+The system will suggest a folder for the installation, e.g.: C:\Programme\GNU\GnuPG
+ 
+Now you can decide which links should be installed – the system will automatically create a link with the start menu.
+
+ 
+If you have selected the default setting – link with start menu – you can define the name of this start menu on the next page or simply accept the name.
+ 
+The last page of the installation process is shown once the installation has been successfully completed:
+
+
+
+
+
+
+
+ 
+Creating a certificate
+Open Kleopatra using the Windows start menu:
+ 
+You will see the main Kleopatra screen – the certificate administration:
+ 
+Click on File→New Certificate. In the following dialog you select the format for the certificate. You can choose from the following: OpenPGP (PGP/MIME) or X.509 (S/MIME).
+ 
+Creating an OpenPGP certificate
+In the certificate option dialog, click on [Create personal OpenPGP key pair].
+ Now enter your e-mail address and your name in the following window. Name and e-mail address will be made publicly visible later. You also have the option of adding a comment for the key pair. Usually this field stays empty, but if you are creating a key for test purposes, you should enter "test" so you do not forget it is a test key.
+ This comment becomes part of your login name, and will become public just like your name and e-mail address.
+ 
+ 
+Now to the most important part: entering your passphrase! To create a key pair, you must enter your personal passphrase:
+ 
+As soon as the key pair creation has been successful, you will see the following dialog:
+ 
+Creating a backup copy of your (private) certificate... Enter the path under which your full certificate (which contains your new key pair, hence the private and public key) should be exported:
+ 
+Creating an X.509 certificate
+In the certificate format selection dialog on page , 43 click on the button [Create personal X.509 key pair and authentication request ]. In the following window, enter your name (CN = common name), your e-mail address (EMAIL), organisation (O) and your country code (C). Optionally, you can also add your location (L = Locality) and department (OU = Organizational Unit).
+ 
+You will see a list of all main entries and settings for review purposes. If you are interested in the (default) expert settings, you can view these via the All details option.
+ 
+As soon as the key pair has been successfully created, you will see the following dialog:
+ 
+
+
+
+
+
+
+
+Distribution of public certificates
+ 
+Encrypting the file:
+•	Go to Files->open(Choose Which file you going to encrypt)-> select the file and click encrypt->it shows the private keys that you generated before(eg: Giant Leap Lab) select one of the key now your  file will be encrypted.
+ 
+
+
+•	Choose the key to encrypt the file 
+ 
+
+Your file will encrypted with extension .gpg
+ 
+
+Decrypting the file:
+•	Go to Files->open(Choose Which file you going to decrypt)->Now it ask Passphrase that you have enter while generating the  key(passphrase is correct)->your file will  be decrypted.
+ 
+•	Your original  file will be displayed with its extension
+ 
+
+
+ 
+Result:
+ 	Thus, the demonstration of how to provide secure data storage, secure data transmission    and for creating digital signatures using (GnuPG) has been studied successfully.
+Ex.No.7
+SETUP A HONEY POT AND MONITOR THE HONEYPOT ON NETWORK
+
+Aim: 
+To setup a Honeypot and monitor the Honeypot on the Network using KFSensor.
+	
+Description:
+KF Sensor is the tool to setup as honeypot when KF Sensor is running it places a siren icon in the windows system tray in the bottom right of the screen. If there are no alerts then green icon is displayed.
+
+Download KFSensor Evaluation SetupFile from KFSensorWebsite.
+
+o	Install with License Agreement and appropriate directory path. 
+o	Reboot the Computer now.
+o	The KF Sensor automatically starts during windows boot Click Next to setup wizard. 
+o	Select all port classes to include and Click Next.
+o	Send the email and Send from email enter the ID and Click Next.
+o	Select the options such as Denial of Service [DOS], Port Activity, Proxy Emulsion, Network Port Analyzer, Click Next.
+o	Select Install as System service and Click Next.
+o	Click Finish.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Result:
+	 Thus, the Honey pot has been set upped and monitored in the Network using KFsensor. 
+
+
+
+
+Ex.No.8
+INSTALL ROOTKITS AND STUDY VARIETY OF OPTIONS
+
+Aim: To Study about root kits and its variety of options.
+
+Description:
+
+•	The term Rootkit originally referred to a collection of tools used to gain administrative access on UNIX operating systems.
+•	The collection of tools often included well-known system monitoring tools that were modified to hide the actions of an unauthorized user. An unauthorized user would replace the existing tools on the system with the modified versions preventing authorized users from discovering the security breach.
+•	Rootkits in Windows refers to programs that use system hooking or modification to hide files, processes, registry keys, and other objects in order to hide programs and behaviors.
+•	In particular, Windows rootkits do not necessarily include any functionality to gain administrative privileges. In fact, many Windows rootkits require administrative privileges to even function.
+Two basic classes of Windows rootkits : kernel mode rootkits & user mode rootkits.
+Rootkit - “A tool used to protect backdoors and other tools from detection by administrators”
+ROOTKITS :
+•	Rootkit is a malicious software program, used to gain elevated access to a computer while it remains hidden from the owner of the computer and installed security software.
+•	Rootkits typically run at a low level and load before the computer's operating system to remain hidden. The rootkit can then divert any OS functions that would reveal its presence and display manipulated results to the user.
+•	Malicious users or software often install a rootkit once they have gained access to a computer, through vulnerabilities in the computer's software or through gaining the password by social engineering, for example. 
+•	The rootkit allows them continued access to the computer, but it leaves no trace of their activity, as it would if they were logged in through a normal user account. Once installed, the rootkit owner can access the computer at any time to run software, or to control the computer remotely.
+
+WHY ROOT KITS ARE USED
+•	Root kits are used by criminals for a variety of purposes, usually to turn a computer into part of a botnet, which can then, in turn, go on to infect other computers or send spam email messages. 
+•	The rootkit owner can install keyloggers to capture user-entered passwords for online banking and similar activities, or steal the user’s personal details to use for identity fraud.
+•	If the rootkit owner uses the computer for criminal acts, such as breaking into other computers, it will appear as if the computer owner is responsible if authorities trace the connection.
+HOW ROOT KITS STAY UNDETECTED
+•	Many root kits infect the boot sectors of the computer’s hard disk, allowing them to load
+before the computers operating system. 
+•	The rootkit then patches the operating system and changes common functions to hide its existence. For example, the root kit could intercept calls for a list of files in a directory, removing its own file names before showing the results to the user, so it would appear as if the directory is clean. 
+•	Both anti-virus and security software programs are vulnerable to the effects of a root kit, which runs at a lower level, ensuring the anti-virus software cannot detect or remove it.
+•	This leads the anti-virus software into believing the system is clean, when it is actually infected and running malicious software.
+Current Rootkit Capabilities:
+Root kits Hide processes, Hide files, Hide registry entries, Hide services, Completely bypass personal firewalls, Undetectable by antivirus, Remotely undetectable, Covert channels - undetectable on the network, Defeat cryptographic hash checking, Install silently, All capabilities ever used by viruses or worms.
+
+
+
+
+
+
+
+ 
+
+	
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Result:
+	Thus, the Root Kits have been installed and the variety of options have been studied.
+
+
+
+
+Ex.No.9
+
+PERFORM A WIRELESS AUDIT OF AN ACCESS POINT / ROUTER AND DECRYPT WEP AND WPA.
+
+Aim: To study about the performance of a wireless audit of an access point or router and Decrypting WEP and WPA
+
+Description:
+
+NetStumbler (Network Stumbler) is one of the Wi-Fi hacking tool which only compatible with windows, this tool also a freeware. With this program, we can search for wireless network which open and infiltrate the network. Its having some compatibility and network adapter issues.
+
+NetStumbler is "beggarware". This means that you do not have to pay for a license to use it. NetStumbler is a tool for Windows that allows you to detect Wireless Local Area Networks (WLANs) using 802.11b, 802.11a and 802.11g (IEEE standards).
+Netstumbler: NetStumbler (Network Stumbler) is one of the Wi-Fi hacking tool which only compatible with windows, this tool also a freeware. With this program, we can search for wireless network which open and infiltrate the network. 
+Its having some compatibility and network adapter issues. NetStumbler will start in a record mode and will automatically configure our wireless card, soit's as simple as launching the tool while our wireless card is enabled.Some APs have lock symbols in the green bubble indicate that the AP has encryption enabled.
+
+NetStumbler uses:
+• Verify that your network is set up the way you intended.
+• Find locations with poor coverage in your WLAN.
+• Detect other networks that might be causing interference with your network.
+• Detect unauthorized "rogue" access points in your workplace.
+• Help aim directional antennas for long-haul WLAN links.
+• Use it recreationally for WarDriving.
+Working with Net stumbler:
+1. Plug in the Wireless Adapter (USB) to the PC system.
+2. Install the driver software supplied with the Adapter. Or use Laptop which as Wireless NIC with it.
+3. Go to the web site http://network-stumbler.software.informer.com
+4. Click on download option and support path to save the file.
+5. Double click on Network Stumbler icon to run setup.
+6. Accept License agreement and Click on “I Agree” button.
+7. Specify the destination folder to install NetStumbler and click on “Next”.
+8. Click on “Close” button to complete installation process.
+9. Double Click on Network Stumbler icon on desktop to run the tool.
+10. On the Menu bar click on Auto reconfigure button and then scanning button to display the details of wireless point/Wi-Fi router available around your system.
+11. Click on Channel and then click on the wireless point number to get the graphical view of the signal strength, noise, vendor etc,.
+12. Switch on Auto Reconfigure, to ensure that as many wireless LANs as possible are found.
+13. These details can be saved into a file by clicking on save option on menu bar.
+
+The Net Stumbler provides following details of WLAN (wireless LAN):
+MAC : The Media Access Control or MAC address is a unique code assigned to networking hardware, in this case the MAC address is referring to the address assigned to the Wireless AP (WAP). So beside the green bubble we see the 12 character MAC address for that AP.
+BSSID: The text contains the BSSID (Basic Service Set Identifier) for wireless devices. The icon shows the signal strength as reported in the last scan: Gray means the item was not detected, or a colored icon ranging from red to green reports the signal strength. A lock appears in the icon if encryption is enabled on the network. For devices on a wired network segment, the icon shows a T-shaped network cable and the MAC address is displayed.
+SSID (Service Set Identifier) : The reported SSID. This may be blank for access points that report their existence but not their SSID. For wired network items, the SSID is assumed to be the SSID that was associated when the item was discovered.
+Name : The device's name. This is reported rarely and only if "Query APs for names" is configured.
+Chan : All the channels that the device has been seen on. The most recent one is listed first. Before the channel number may be a star (*), which means you are associated with the device, or a plus (+) which means that you were associated with it at some point.
+Speed: The maximum reported bandwidth for the device (this is not the actual bandwidth). If you are using an 802.11b device, it may misreport the bandwidth of 802.11g networks as 11Mbps. Some devices are capable of 108Mbps but only report 54Mbps.
+Vendor: The vendor assigned to the MAC, which may not be the actual equipment manufacturer.
+Type :"AP" for a BSS, "Peer" for an IBSS.
+Encryption: The word "WEP" will appear on an encrypted network, regardless of whether it
+is really using WEP.
+SNR: The current Signal to Noise ratio, either in dB or arbitrary RSSI units.
+Signal+ : The highest seen Signal value.
+Noise-: The lowest seen Noise value.
+SNR+ The highest seen SNR value.
+IP, Subnet : The IP configuration of the object, if available.
+Latitude, Longitude, Distance: If you are using a GPS receiver, this indicates the estimated
+position of the object. This position is currently the location where the strongest signal was
+seen, which is never the actual location. Distance is measured from your current position to
+the object's estimated position.
+Graph View
+The data that appears in the graph view is somewhat dependent on your hardware and device driver.
+•	The green bars indicate signal strength. The higher the bar, the better the signal.
+•	The red bars, if available, indicate noise level. The higher the bar, the higher the noise.
+•	The gap between the green and red bars is equivalent to signal to noise ratio.
+•	A purple bar indicates loss of signal, possibly temporary.
+To avoid using the networks that you observe, go to the Network Control Panel and unbind TCP/IP from your wireless LAN card.
+The graph view will automatically scroll to keep up with new data if you are viewing the rightmost part of it.
+decibel : dBm is a decibel unit that measures power. 0 dBm is equivalent to 1 milliwatt. 30 dBm is equivalent to 1 watt. A decibel is a logarithmic measure of something compared with a defined reference point. An increase of 10 dB corresponds to the value being multiplied by 10. A decrease of 10 dB corresponds to the value is divided by 10.
+Access Points (APs) that do have encryption enabled. One of the flaws with the latest version of NetStumbler is that all enabled encryption is displayed as WEP.
+Decrypt 802.11
+Wireshark can decrypt WEP and WPA/WPA2 in pre-shared (or personal) mode. WPA/WPA2 enterprise mode decryption is not yet supported.
+You can add decryption keys using Wireshark's 802.11 preferences or by using the wireless toolbar. Up to 64 keys are supported.
+Adding Keys: 802.11 Preferences
+Go to Edit->Preferences->IEEE 802.11. You should see a window that looks like this:
+Note that the key examples mention WPA, and that each key item is labeled "Key". If your preferences window doesn't mention WPA, like this
+then your version of Wireshark only supports WEP decryption. This might be the case
+with older versions of Wireshark, particularly the 64-bit Windows version.
+In all versions WEP keys can be specified as a string of hexadecimal numbers, with or  without colons:
+a1:b2:c3:d4:e5
+0102030405060708090a0b0c0d
+In versions that support WPA decryption you should use a prefix to tell Wireshark what kind of key you're using:
+wep The key is parsed as a WEP key.
+wep:a1:b2:c3:d4:e5
+wpa-pwd The password and SSID are used to create a raw pre-shared key.
+wpa-pwd:MyPassword:MySSID
+wpa-psk The key is parsed as a raw pre-shared key.
+wpa-psk:0102030405060708091011...6061626364
+Adding Keys: Wireless Toolbar
+If you are using the Windows version of Wireshark and you have an AirPcap adapter you can add decryption keys using the wireless toolbar. If the toolbar isn't visible, you can show it by selecting View->Wireless Toolbar. Click on the Decryption Keys...
+button on the toolbar: This will open the decryption key management window. As shown in the window you can select between three decryption modes: None, Wireshark, and Driver:
+ 
+ 
+ 
+ 
+Result:
+Thus, the Performance of a a wireless audit of an access point / router and  decrypt WEP and WPA has been studied.
+Ex.No.10
+
+DEMONSTRATE INTRUSION DETECTION SYSTEM (IDS) USING ANY TOOL (SNORT)
+Aim: To demonstrate Intrusion Detection System using SNORT tool.
+
+Description:
+
+With the development of network technologies and applications, network attacks are greatly increasing both in number and severity. As a key technique in network security domain, Intrusion Detection System (IDS) plays vital role of detecting various kinds of attacks and secures the networks. 
+Main purpose of IDS is to find out intrusions among normal audit data and this can be considered as classification problem. Intrusion detection systems (IDS) are an effective security technology, which can detect, prevent and possibly react to the attack. 
+It performs monitoring of target sources of activities, such as audit and network traffic data in computer or network systems, requiring security measures, and employs various techniques for providing security services. With the tremendous growth of network-based services and sensitive information on networks, network security is becoming more and more important than ever before.
+Intrusion : Attempting to break into or misuse your system. Intruders may be from outside the network or legitimate users of the network. Intrusion can be a physical, system or remote intrusion.
+Intrusion Detection Systems look for attack signatures, which are specific patterns that usually indicate malicious or suspicious intent.
+About Snort:
+Snort is an open source network intrusion prevention system, capable of performing realtime traffic analysis and packet logging on IP networks. It can perform protocol analysis, content searching/matching, and can be used to detect a variety of attacks and probes, such as buffer overflows, stealth port scans, CGI attacks, SMB probes, OS fingerprinting attempts, and much more.
+Snort has three primary uses: 
+•	It can be used as a straight packet sniffer like tcpdump, a packet logger (useful for network traffic debugging, etc), or as a full blown network intrusion prevention system.
+•	The privacy of the Snort community is very important to Sourcefire. If you choose to optout, the information collected at the time of registration will not be used for any Sourcefire marketing efforts. In addition, Sourcefire will not sell or distribute any personal information to 3rd party companies.
+
+SNORT can be configured to run in three modes:
+1.   Sniffer mode	2. Packet Logger mode	3. Network Intrusion Detection System mode
+
+•	Sniffer mode  snort –v Print out the TCP/IP packets header on the screen
+Snort –vd show the TCP/IP ICMP header with application data in transit.
+•	Packet Logger mode snort –dev –l c:\log [create this directory in the C drive] and snort will automatically know to go into packet logger mode, it collects every packet it sees and places it in log directory.
+snort –dev –l c:\log –h ipaddress/24 This rule tells snort that you want to print out the data link and TCP/IP headers as well as application data into  the log directory.
+snort –l c:\log –b This is binary mode logs everything into a single file. Network 
+•	Intrusion Detection System modesnort –d c:\log –h ipaddress/24 –c snort.conf This is a configuration file applies rule to each packet to decide it an action based upon the rule type in the file.
+Snort –d –h ipaddress/24 –l c:\log –c snort.conf This will cnfigure snort to run in its most basic NIDS from, logging packets that trigger rules specifies in the snort.conf
+Working with Snort:
+1. Go to the web site www.snort.org/start/download
+2. Click on download option and support path to save the setup file.
+3. Double click on Snort Installation icon to run setup.
+4. Accept License agreement and Specify path for installation, then Click on Next.
+5. Install snort with or without database support.
+6. Skip the WinPcap driver installation
+7. Select all the components and Click Next.
+8. Install and Close.
+9. Add the path variable in windows environment variable by selecting new classpath.
+10. Create a path variable and point it at snort.exe variable name : path and variable value as c:\snort\bin.
+11. Click OK button and then close all dialog boxes.
+12. and type the following commands:
+13. Go to command prompt and get into Snort/bin directory and run Snort.exe file.
+14. An editor window displays the complete details of packets flowing across the system,
+the IP Address of packet generator, date &Time, length of Packet, Time to live(TTL)
+Etc at Realtime.
+15. By analyzing these details Intrusers can be traced at real time.
+16. These details can be documents by using a print screen option.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Open command prompt and type the following commands:
+ 
+
+ 
+
+
+ 
+
+Result:
+	Thus, Intrusion Detection system using SNORT tool has been demonstrated successfully.
+
